@@ -1,5 +1,6 @@
 package com.bwin.IVY;
 
+import java.io.IOException;
 import java.time.Duration;
 
 import org.openqa.selenium.WebDriver;
@@ -7,9 +8,18 @@ import org.openqa.selenium.chrome.ChromeDriver;
 
 public class BaseClass {
 	
-	static WebDriver driver = null;
+	public static WebDriver driver = null;
 	
 	static {
+		
+		
+		try {
+			Runtime.getRuntime().exec("taskkill /F /IM chromedriver.exe /T");
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+
 		
 		System.setProperty("webdriver.chrome.driver", "src/main/resources/driver/chromedriver.exe");	
 		
