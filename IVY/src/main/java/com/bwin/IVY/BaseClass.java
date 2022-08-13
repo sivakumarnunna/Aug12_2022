@@ -15,6 +15,7 @@ public class BaseClass {
 		
 		try {
 			Runtime.getRuntime().exec("taskkill /F /IM chromedriver.exe /T");
+			System.out.println("killed all instances");
 		} catch (IOException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();

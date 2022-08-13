@@ -248,86 +248,7 @@ public class DateUtils {
                 cal1.getClass() == cal2.getClass();
     }
 
-    /**
-     * <p>Parses a string representing a date by trying a variety of different parsers.</p>
-     *
-     * <p>The parse will try each parse pattern in turn.
-     * A parse is only deemed successful if it parses the whole of the input string.
-     * If no parse patterns match, a ParseException is thrown.</p>
-     * The parser will be lenient toward the parsed date.
-     *
-     * @param str  the date to parse, not null
-     * @param parsePatterns  the date format patterns to use, see SimpleDateFormat, not null
-     * @return the parsed date
-     * @throws NullPointerException if the date string or pattern array is null
-     * @throws ParseException if none of the date patterns were suitable (or there were none)
-     */
-    public static Date parseDate(final String str, final String... parsePatterns) throws ParseException {
-        return parseDate(str, null, parsePatterns);
-    }
 
-    /**
-     * <p>Parses a string representing a date by trying a variety of different parsers,
-     * using the default date format symbols for the given locale.</p>
-     *
-     * <p>The parse will try each parse pattern in turn.
-     * A parse is only deemed successful if it parses the whole of the input string.
-     * If no parse patterns match, a ParseException is thrown.</p>
-     * The parser will be lenient toward the parsed date.
-     *
-     * @param str  the date to parse, not null
-     * @param locale the locale whose date format symbols should be used. If {@code null},
-     * the system locale is used (as per {@link #parseDate(String, String...)}).
-     * @param parsePatterns  the date format patterns to use, see SimpleDateFormat, not null
-     * @return the parsed date
-     * @throws NullPointerException if the date string or pattern array is null
-     * @throws ParseException if none of the date patterns were suitable (or there were none)
-     * @since 3.2
-     */
-    public static Date parseDate(final String str, final Locale locale, final String... parsePatterns) throws ParseException {
-        return parseDateWithLeniency(str, locale, parsePatterns, true);
-    }
-
-    /**
-     * <p>Parses a string representing a date by trying a variety of different parsers.</p>
-     *
-     * <p>The parse will try each parse pattern in turn.
-     * A parse is only deemed successful if it parses the whole of the input string.
-     * If no parse patterns match, a ParseException is thrown.</p>
-     * The parser parses strictly - it does not allow for dates such as "February 942, 1996".
-     *
-     * @param str  the date to parse, not null
-     * @param parsePatterns  the date format patterns to use, see SimpleDateFormat, not null
-     * @return the parsed date
-     * @throws NullPointerException if the date string or pattern array is null
-     * @throws ParseException if none of the date patterns were suitable
-     * @since 2.5
-     */
-    public static Date parseDateStrictly(final String str, final String... parsePatterns) throws ParseException {
-        return parseDateStrictly(str, null, parsePatterns);
-    }
-
-    /**
-     * <p>Parses a string representing a date by trying a variety of different parsers,
-     * using the default date format symbols for the given locale..</p>
-     *
-     * <p>The parse will try each parse pattern in turn.
-     * A parse is only deemed successful if it parses the whole of the input string.
-     * If no parse patterns match, a ParseException is thrown.</p>
-     * The parser parses strictly - it does not allow for dates such as "February 942, 1996".
-     *
-     * @param str  the date to parse, not null
-     * @param locale the locale whose date format symbols should be used. If {@code null},
-     * the system locale is used (as per {@link #parseDateStrictly(String, String...)}).
-     * @param parsePatterns  the date format patterns to use, see SimpleDateFormat, not null
-     * @return the parsed date
-     * @throws NullPointerException if the date string or pattern array is null
-     * @throws ParseException if none of the date patterns were suitable
-     * @since 3.2
-     */
-    public static Date parseDateStrictly(final String str, final Locale locale, final String... parsePatterns) throws ParseException {
-        return parseDateWithLeniency(str, locale, parsePatterns, false);
-    }
 
     /**
      * <p>Parses a string representing a date by trying a variety of different parsers.</p>
@@ -346,31 +267,6 @@ public class DateUtils {
      * @throws ParseException if none of the date patterns were suitable
      * @see java.util.Calendar#isLenient()
      */
-    private static Date parseDateWithLeniency(final String dateStr, final Locale locale, final String[] parsePatterns,
-        final boolean lenient) throws ParseException {
-        Objects.requireNonNull(dateStr, "str");
-        Objects.requireNonNull(parsePatterns, "parsePatterns");
-
-        final TimeZone tz = TimeZone.getDefault();
-        final Locale lcl = LocaleUtils.toLocale(locale);
-        final ParsePosition pos = new ParsePosition(0);
-        final Calendar calendar = Calendar.getInstance(tz, lcl);
-        calendar.setLenient(lenient);
-
-        for (final String parsePattern : parsePatterns) {
-            final FastDateParser fdp = new FastDateParser(parsePattern, tz, lcl);
-            calendar.clear();
-            try {
-                if (fdp.parse(dateStr, pos, calendar) && pos.getIndex() == dateStr.length()) {
-                    return calendar.getTime();
-                }
-            } catch (final IllegalArgumentException ignored) {
-                // leniency is preventing calendar from being set
-            }
-            pos.setIndex(0);
-        }
-        throw new ParseException("Unable to parse the date: " + dateStr, -1);
-    }
 
     /**
      * Adds a number of years to a date returning a new object.

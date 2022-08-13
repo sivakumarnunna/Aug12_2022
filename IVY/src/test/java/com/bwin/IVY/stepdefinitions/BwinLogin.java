@@ -27,7 +27,7 @@ public class BwinLogin extends BaseClass{
 	}
 
 	@When("enter username {string} password {string}")
-	public void enter_username_password(String string, String string2) {
+	public void enter_username_password(String string, String string2) throws InterruptedException {
 		
 		
 		homepage.navigateToLoginPage();
